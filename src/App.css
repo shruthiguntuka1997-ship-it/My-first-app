@@ -1,0 +1,474 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap');
+
+:root {
+  --primary: #4CAF50;
+  --secondary: #8BC34A;
+  --accent: #FFEB3B;
+  --background: #E0F7FA;
+  --text: #37474F;
+  --card-bg: #FFFFFF;
+}
+
+body {
+  margin: 0;
+  font-family: 'Baloo 2', cursive;
+  background-color: var(--background);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#root {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+}
+
+.app-container {
+  background-color: var(--card-bg);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h1 {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+h2 {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.message {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  color: #555;
+}
+
+.message-box {
+  background-color: #E0F7FA;
+  padding: 10px;
+  border-radius: 10px;
+  color: #006064;
+  font-weight: 600;
+  margin: 10px auto;
+  font-size: 1.1rem;
+  max-width: 80%;
+  border: 2px dashed #B2DFDB;
+}
+
+/* Header & Profile */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.profile-btn {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.profile-btn:hover {
+  transform: scale(1.1);
+  border-color: var(--primary);
+}
+
+/* Header Info (Day & Streak) */
+.header-info {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  background: #E8F5E9;
+  padding: 10px 20px;
+  border-radius: 50px;
+  margin-bottom: 20px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #2E7D32;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Tree Selection */
+.tree-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.tree-select-btn {
+  background: white;
+  border: 4px solid #ccc;
+  border-radius: 20px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tree-select-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.tree-emoji {
+  font-size: 3rem;
+  margin-bottom: 5px;
+}
+
+.tree-name {
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Inputs & Buttons */
+input[type="text"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px 20px;
+  border: 3px solid #B2DFDB;
+  border-radius: 50px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.2rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+  border-color: var(--primary);
+}
+
+button.start-btn {
+  margin-top: 15px;
+  padding: 10px 30px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+button.start-btn:hover {
+  background-color: #43a047;
+  transform: scale(1.05);
+}
+
+button.start-btn.outline {
+  background: transparent;
+  color: #555;
+  border: 2px solid #ddd;
+}
+
+/* Plant Stage & Fruits */
+.plant-stage {
+  margin: 20px auto;
+  min-height: 250px;
+  /* Ensure space for tree */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  /* Prevent overflow from cutting off fruits? No, let them be visible */
+}
+
+.plant-img {
+  width: 220px;
+  height: auto;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 1;
+}
+
+.plant-img.grow-anim {
+  animation: pop 0.6s ease-out;
+}
+
+.pulse-anim {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(100%);
+  }
+
+  50% {
+    transform: scale(1.05);
+    filter: brightness(110%);
+  }
+
+  100% {
+    transform: scale(1);
+    filter: brightness(100%);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Fruit Overlay */
+.fruit-overlay {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  /* Match image width */
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.fruit {
+  position: absolute;
+  font-size: 1.8rem;
+  animation: fruitPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes fruitPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Habits List */
+.habits-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  text-align: left;
+  margin-top: 30px;
+}
+
+.habit-item {
+  background-color: #F1F8E9;
+  padding: 15px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+  border: 2px solid transparent;
+}
+
+.habit-item:hover {
+  background-color: #DCEDC8;
+  transform: translateY(-2px);
+}
+
+.habit-item.done {
+  background-color: #C8E6C9;
+  border-color: #81C784;
+  opacity: 0.9;
+}
+
+.habit-item input {
+  margin-right: 15px;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.habit-item span {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Celebration */
+.celebration {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 10;
+  animation: float 3s ease-in-out infinite;
+  text-shadow: 0 2px 5px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes float {
+  0% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 25px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  border: 5px solid #FFEB3B;
+  animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.profile-modal {
+  max-width: 500px;
+  border-color: #2196F3;
+}
+
+.modal-content h3 {
+  color: #4CAF50;
+  margin-top: 0;
+}
+
+.question-text {
+  font-size: 1.3rem;
+  margin: 20px 0;
+  color: #37474F;
+}
+
+.options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.option-btn {
+  padding: 12px;
+  border: 2px solid #E0E0E0;
+  border-radius: 15px;
+  background-color: #FAFAFA;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.option-btn:hover {
+  background-color: #E0F7FA;
+  border-color: #26C6DA;
+  transform: scale(1.02);
+}
+
+.modal-feedback {
+  font-size: 1.2rem;
+  font-weight: bold;
+  height: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.modal-feedback.error {
+  color: #FF5722;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  margin-top: 10px;
+}
+
+/* Profile Panel Styles */
+.profile-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.history-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.history-card {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  text-align: left;
+  border-left: 5px solid #ccc;
+}
+
+.history-card strong {
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.info-card {
+  background: #FFF3E0;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.info-card h4 {
+  margin-top: 0;
+  color: #E65100;
+}
