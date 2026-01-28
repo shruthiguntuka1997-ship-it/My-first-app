@@ -124,13 +124,56 @@ const PARENT_GATE_QUESTIONS = [
     }
 ]
 
+// Helper to create a fresh month/user data, used for new profiles
+const createInitialUserData = () => {
+    // MIGRATION: Check for old flat data (from an older version of the app)
+    const oldName = localStorage.getItem('userName')
+    const oldTree = localStorage.getItem('treeType')
+    const oldStage = parseInt(localStorage.getItem('growthStage')) || 1
+    const oldStreak = parseInt(localStorage.getItem('consecutiveStreak')) || 0
+    const oldLastDate = localStorage.getItem('lastCompletedDate') || ''
+
+    const now = new Date()
+    const currentMonthId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+
+    return {
+        userName: oldName || '',
+        history: [], // [{ monthId, treeType, growthStage, fruitsEarned, status }]
+        currentMonth: {
+            monthId: currentMonthId,
+            treeType: oldTree || null,
+            growthStage: oldStage,
+            consecutiveStreak: oldStreak,
+            lastCompletedDate: oldLastDate,
+            fruitsEarned: 0, // Start fresh
+            isCelebrated: false // For Day 30 celebration
+        },
+        // Settings could go here
+        rewards: {}
+    }
+}
+
 function App() {
     // --- STATE MANAGEMENT ---
+    // Multi-profile shell
+    const [profiles, setProfiles] = useState(() => {
+        const saved = localStorage.getItem('habitGardenProfiles')
+        return saved ? JSON.parse(saved) : []
+    })
+
+    const [currentProfileId, setCurrentProfileId] = useState(() => {
+        const saved = localStorage.getItem('habitGardenCurrentProfileId')
+        return saved || null
+    })
+
+    const [appView, setAppView] = useState('profileSelect') // 'profileSelect' | 'dashboard' | 'tasks'
+
     const [showProfile, setShowProfile] = useState(false);
 
-    // Core Data Structure
+    // Core Data Structure (per profile)
     const [userData, setUserData] = useState(() => {
-        const saved = localStorage.getItem('habitGardenData')
+        const profileKey = currentProfileId ? `habitGardenData_${currentProfileId}` : 'habitGardenData'
+        const saved = localStorage.getItem(profileKey)
         if (saved) {
             try {
                 return JSON.parse(saved)
@@ -138,32 +181,7 @@ function App() {
                 console.error('Failed to parse saved habitGardenData', e)
             }
         }
-
-        // MIGRATION: Check for old flat data (from an older version of the app)
-        const oldName = localStorage.getItem('userName')
-        const oldTree = localStorage.getItem('treeType')
-        const oldStage = parseInt(localStorage.getItem('growthStage')) || 1
-        const oldStreak = parseInt(localStorage.getItem('consecutiveStreak')) || 0
-        const oldLastDate = localStorage.getItem('lastCompletedDate') || ''
-
-        const now = new Date()
-        const currentMonthId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-
-        return {
-            userName: oldName || '',
-            history: [], // [{ monthId, treeType, growthStage, fruitsEarned, status }]
-            currentMonth: {
-                monthId: currentMonthId,
-                treeType: oldTree || null,
-                growthStage: oldStage,
-                consecutiveStreak: oldStreak,
-                lastCompletedDate: oldLastDate,
-                fruitsEarned: 0, // Start fresh
-                isCelebrated: false // For Day 30 celebration
-            },
-            // Settings could go here
-            rewards: {}
-        }
+        return createInitialUserData()
     })
 
     // Transient State (Daily)
@@ -204,10 +222,30 @@ function App() {
 
     // --- LOGIC & EFFECTS ---
 
+    // Load userData when profile changes
+    useEffect(() => {
+        if (!currentProfileId) return
+        const key = `habitGardenData_${currentProfileId}`
+        const saved = localStorage.getItem(key)
+        if (saved) {
+            try {
+                setUserData(JSON.parse(saved))
+                return
+            } catch (e) {
+                console.error('Failed to parse saved habitGardenData for profile', currentProfileId, e)
+            }
+        }
+        // If nothing saved yet, start fresh for this profile
+        setUserData(createInitialUserData())
+    }, [currentProfileId])
+
     // 1. Persistence & Month Check
     useEffect(() => {
-        // Save Data
-        localStorage.setItem('habitGardenData', JSON.stringify(userData))
+        if (!currentProfileId || !userData) return
+
+        // Save Data (per profile)
+        const key = `habitGardenData_${currentProfileId}`
+        localStorage.setItem(key, JSON.stringify(userData))
         localStorage.setItem('habits', JSON.stringify(habits))
         localStorage.setItem('usedQuestions', JSON.stringify(usedQuestions))
 
@@ -355,6 +393,7 @@ function App() {
                     }
                 })
                 setAnimKey(prev => prev + 1)
+                setAppView('dashboard')
             }
 
             // 2. Success Message
@@ -424,8 +463,8 @@ function App() {
     }
 
     // --- VISUALS ---
-    const { userName } = userData
-    const { treeType, growthStage, consecutiveStreak, fruitsEarned, isCelebrated } = userData.currentMonth
+    const { userName } = userData || {}
+    const { treeType, growthStage, consecutiveStreak, fruitsEarned, isCelebrated } = userData?.currentMonth || {}
     const completedCount = Object.values(habits).filter(Boolean).length
     const isDailyDone = completedCount === 6
 
@@ -451,6 +490,64 @@ function App() {
         homework: '📚', dinner: '🍽️', sleep: '😴'
     }
 
+    // --- TOP-LEVEL VIEWS ---
+
+    // 1) Profile selection (Netflix-kids style)
+    if (!currentProfileId) {
+        return (
+            <div className="app-container profile-select">
+                <h1>Good Habit Garden 🌱</h1>
+                <p className="message">Who is playing today?</p>
+
+                <div className="profile-grid">
+                    {profiles.map((p) => (
+                        <button
+                            key={p.id}
+                            className="profile-card"
+                            onClick={() => {
+                                setCurrentProfileId(p.id)
+                                localStorage.setItem('habitGardenCurrentProfileId', p.id)
+                                setAppView('dashboard')
+                            }}
+                        >
+                            <div className="profile-avatar">
+                                {p.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="profile-name">{p.name}</div>
+                        </button>
+                    ))}
+
+                    <button
+                        className="profile-card add-profile"
+                        onClick={() => {
+                            const name = prompt("What's your name?")
+                            if (!name) return
+                            const id = `p_${Date.now()}`
+                            const next = [...profiles, { id, name }]
+                            setProfiles(next)
+                            localStorage.setItem('habitGardenProfiles', JSON.stringify(next))
+                            setCurrentProfileId(id)
+                            localStorage.setItem('habitGardenCurrentProfileId', id)
+                            setAppView('dashboard')
+                        }}
+                    >
+                        +
+                    </button>
+                </div>
+            </div>
+        )
+    }
+
+    // If we have a profile but userData not loaded yet, simple loading state
+    if (!userData) {
+        return (
+            <div className="app-container">
+                <p className="message">Loading your garden...</p>
+            </div>
+        )
+    }
+
+    // 2) Existing name-collection view (acts as first-time setup per profile)
     if (!userName) {
         return (
             <div className="app-container">
@@ -500,6 +597,63 @@ function App() {
         )
     }
 
+    // 3) Dashboard view (homepage after profile select, before tasks)
+    if (appView === 'dashboard') {
+        const profile = profiles.find(p => p.id === currentProfileId)
+        const treeName = TREE_TYPES[treeType]?.name || 'tree'
+        const days = Array.from({ length: 30 }, (_, i) => i + 1)
+
+        return (
+            <div className="app-container dashboard">
+                <h1 className="dash-greeting">Hi {profile?.name || userName}!</h1>
+
+                <div className="dash-card">
+                    <p className="message">
+                        You are growing{" "}
+                        {['A', 'E', 'I', 'O', 'U'].includes(treeName.charAt(0).toUpperCase()) ? 'an' : 'a'}{" "}
+                        <strong>{treeName.toLowerCase()}</strong>.
+                    </p>
+                    <p>Day {growthStage || 1} of 30</p>
+                </div>
+
+                <div className="day-grid">
+                    {days.map((day) => {
+                        let state = 'future'
+                        if (growthStage && day < growthStage) state = 'done'
+                        if (growthStage && day === growthStage) state = 'today'
+                        return (
+                            <button
+                                key={day}
+                                className={`day-card ${state}`}
+                                onClick={() => {
+                                    if (state === 'future') return
+                                    if (state === 'done') {
+                                        alert('This day is already finished. Great job!')
+                                        return
+                                    }
+                                    setAppView('tasks')
+                                }}
+                            >
+                                <span className="day-number">{day}</span>
+                            </button>
+                        )
+                    })}
+                </div>
+
+                <button
+                    className="small-btn"
+                    onClick={() => {
+                        setCurrentProfileId(null)
+                        localStorage.removeItem('habitGardenCurrentProfileId')
+                    }}
+                >
+                    Switch profile
+                </button>
+            </div>
+        )
+    }
+
+    // Tree selection (runs inside a profile, before dashboard/tasks)
     if (!treeType) {
         return (
             <div className="app-container">
@@ -519,6 +673,7 @@ function App() {
         )
     }
 
+    // Fallback: if not explicitly on dashboard, show main tasks view
     return (
         <div className="app-container">
             {/* Header: Profile Icon */}
