@@ -663,7 +663,10 @@ function App() {
 
         return (
             <div className="app-container dashboard">
-                <h1 className="dash-greeting">Hi {profile?.name || userName}!</h1>
+                <div className="header-row">
+                    <h1 className="dash-greeting">Hi {profile?.name || userName}!</h1>
+                    <button className="profile-btn" onClick={() => { setShowProfile(true); setParentLocked(true); loadParentGateQuestion(); }}>👤</button>
+                </div>
 
                 <div className="dash-card">
                     <p className="message">
@@ -785,6 +788,7 @@ function App() {
                     <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Good Habit Garden 🌱</h1>
                 </div>
                 {/* <button className="profile-btn" onClick={() => { setShowProfile(true); setParentLocked(true); loadParentGateQuestion(); }}>👤</button> */}
+                <button className="profile-btn" onClick={() => { setShowProfile(true); setParentLocked(true); loadParentGateQuestion(); }}>👤</button>
             </div>
 
             {/* Main Game UI */}
