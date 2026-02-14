@@ -262,6 +262,7 @@ function App() {
     const [gateAnswer, setGateAnswer] = useState('')
     const [gateError, setGateError] = useState('')
     const [parentQuestion, setParentQuestion] = useState(null)
+    const [infoModal, setInfoModal] = useState({ show: false, title: '', message: '', type: 'neutral' }) // type: success, error, neutral
 
     // --- LOGIC & EFFECTS ---
 
@@ -688,20 +689,13 @@ function App() {
                             state = 'today'
                         }
 
-                        // Override for visual if we want to show 'done' for today if actually done?
-                        // No, prompt says: "Only today’s day allows task completion".
-                        // If today is done, we can show it as done OR keep it as 'today' but visually distinct?
-                        // Let's stick to the prompt: Completed day, Missed, Today, Future.
-                        // If 'Today' is fully completed in terms of habits, we usually mark it 'done' in the grid TOMORROW.
-                        // But user might want to see it turned green TODAY.
-                        // Let's check:
-                        if (isToday && isDailyDone) state = 'done' // Optional visual feedback
+                        if (isToday && isDailyDone) state = 'done'
 
-                        // Emojis for states
+                        // Content Logic for Garden Theme
                         let content = <span className="day-number">{day}</span>
-                        if (state === 'done') content = <span>✅</span>
-                        if (state === 'missed') content = <span>⏸</span>
-                        if (state === 'today') content = <span>⭐</span>
+                        if (state === 'done') content = <span style={{ fontSize: '1.5rem' }}>🌸</span>
+                        if (state === 'missed') content = <span style={{ fontSize: '1.5rem' }}>🍂</span>
+                        // 'today' keeps the day number, CSS adds the glow and star
 
                         return (
                             <button
@@ -709,36 +703,22 @@ function App() {
                                 className={`day-card ${state}`}
                                 onClick={() => {
                                     if (state === 'future') return
-                                    // Navigate to Day Detail
-                                    // If it's today, we go to "Tasks" (Execution)
-                                    // If it's past, we probably want a Read-Only view or just an alert for now as per constraints "Do not allow editing past days"
+
                                     if (isToday) {
                                         setAppView('tasks')
                                     } else {
-                                        // For now, simpler: show alert or just nothing?
-                                        // Prompt: "Clicking a day... opens a Day Detail view... shows Date, Tree, Completion..."
-                                        // Since we reuse the main view for "Day Detail", let's route there but maybe locked?
-                                        // Actually, "Day Detail view shows Date, Tree growth stage... Past days are read-only".
-                                        // The current 'tasks' view IS the main view. We can reuse it.
-                                        // We need to tell the view WHICH day we are viewing.
-                                        // For simplicity/time, let's just use the current view but if it's NOT today, we hide checks?
-                                        // Wait, the prompt says "Day Detail view".
-                                        // Let's pass a 'viewingDay' state or similar?
-
-                                        // Implementation shortcut:
-                                        // If past day, we just alert for now OR we set a 'viewMode' state.
-                                        // Given limited complexity budget, let's just Alert for Past, and Focus for Today.
-                                        // Wait, "Day Detail view shows... Past days are read-only".
-                                        // User expects a screen.
-                                        // Let's stick to: "Today" -> Go to Game. "Past" -> Show simple Modal/Alert with details?
-                                        // "Clicking a day... opens a Day Detail view".
-                                        // Okay, let's make a simple "Day Detail" modal/overlay to satisfy the requirement without heavy routing.
-                                        alert(`Day ${day}\nStatus: ${state.toUpperCase()}\nGrowth Stage: ${day}\n(Past days cannot be edited)`)
+                                        setInfoModal({
+                                            show: true,
+                                            title: `Day ${day} Details`,
+                                            message: `This day is marked as ${state === 'done' ? 'Bloomed 🌸' : state === 'missed' ? 'Missed 🍂' : 'Today'}.\nGrowth Stage: ${day}.`,
+                                            type: state === 'done' ? 'success' : 'neutral'
+                                        })
                                     }
                                 }}
                             >
                                 {content}
-                                {state === 'today' && <span className="day-label">Today</span>}
+                                {state === 'today' && <span className="day-label" style={{ display: 'none' }}>Today</span>}
+                                {/* CSS handles the label or glow now */}
                             </button>
                         )
                     })}
@@ -969,9 +949,30 @@ function App() {
                     </div>
                 </div>
             )}
+
+            {/* Info Modal (Custom Alert) */}
+            {infoModal.show && (
+                <div className="modal-overlay" style={{ zIndex: 11000 }}>
+                    <div className="modal-content info-modal">
+                        <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>
+                            {infoModal.type === 'success' ? '🎉' : infoModal.type === 'error' ? '😕' : 'ℹ️'}
+                        </div>
+                        <h3 style={{ color: 'var(--primary)', marginTop: 0 }}>{infoModal.title}</h3>
+                        <p style={{ fontSize: '1.1rem', whiteSpace: 'pre-line', color: '#555' }}>{infoModal.message}</p>
+                        <button
+                            className="start-btn"
+                            style={{ padding: '8px 30px', fontSize: '1rem', marginTop: '15px' }}
+                            onClick={() => setInfoModal(prev => ({ ...prev, show: false }))}
+                        >
+                            OK, Got it! 👍
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
+
 
 
 export default App
