@@ -89,19 +89,19 @@ h2 {
 }
 
 .back-btn {
-    background: #f0f0f0;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-family: inherit;
-    font-weight: bold;
-    color: #555;
-    cursor: pointer;
-    transition: background 0.2s;
+  background: #f0f0f0;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-family: inherit;
+  font-weight: bold;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 .back-btn:hover {
-    background: #e0e0e0;
+  background: #e0e0e0;
 }
 
 
@@ -198,18 +198,19 @@ button.start-btn.outline {
 }
 
 button.small-btn {
-    margin-top: 20px;
-    padding: 8px 20px;
-    background: transparent;
-    color: #888;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.9rem;
+  margin-top: 20px;
+  padding: 8px 20px;
+  background: transparent;
+  color: #888;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
 }
+
 button.small-btn:hover {
-    background: #f5f5f5;
-    color: #555;
+  background: #f5f5f5;
+  color: #555;
 }
 
 
@@ -302,6 +303,27 @@ button.small-btn:hover {
 
   100% {
     transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.bloom-anim {
+  animation: bloom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+@keyframes bloom {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.2) rotate(10deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
     opacity: 1;
   }
 }
@@ -508,149 +530,149 @@ button.small-btn:hover {
 
 /* DASHBOARD STYLES */
 .dashboard .dash-greeting {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .dash-card {
-    background: #E8F5E9;
-    background-image: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.1);
+  background: #E8F5E9;
+  background-image: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.1);
 }
 
 .dash-card strong {
-    color: var(--primary);
-    text-transform: capitalize;
+  color: var(--primary);
+  text-transform: capitalize;
 }
 
 .day-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 20px 0;
 }
 
 .day-card {
-    background: white;
-    aspect-ratio: 1;
-    border: 2px solid #EEE;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-family: inherit;
-    font-weight: bold;
-    color: #888;
-    position: relative;
-    cursor: default;
-    transition: all 0.2s;
+  background: white;
+  aspect-ratio: 1;
+  border: 2px solid #EEE;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: inherit;
+  font-weight: bold;
+  color: #888;
+  position: relative;
+  cursor: default;
+  transition: all 0.2s;
 }
 
 .day-card.future {
-    background: #FAFAFA;
-    border-style: dashed;
-    opacity: 0.6;
+  background: #FAFAFA;
+  border-style: dashed;
+  opacity: 0.6;
 }
 
 .day-card.done {
-    background: #4CAF50;
-    color: white;
-    border-color: #4CAF50;
-    cursor: pointer;
+  background: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+  cursor: pointer;
 }
 
 .day-card.missed {
-    background: #FFEBEE;
-    color: #F44336;
-    border-color: #FFCDD2;
-    cursor: pointer;
+  background: #FFEBEE;
+  color: #F44336;
+  border-color: #FFCDD2;
+  cursor: pointer;
 }
 
 .day-card.today {
-    background: #FFF9C4;
-    border: 3px solid #FFEB3B;
-    color: #333;
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(255, 235, 59, 0.3);
-    cursor: pointer;
-    z-index: 2;
+  background: #FFF9C4;
+  border: 3px solid #FFEB3B;
+  color: #333;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(255, 235, 59, 0.3);
+  cursor: pointer;
+  z-index: 2;
 }
 
 .day-card.today:hover {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .day-number {
-    font-size: 1.2rem;
+  font-size: 1.2rem;
 }
 
 .day-label {
-    font-size: 0.6rem;
-    position: absolute;
-    bottom: 5px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #F57F17;
+  font-size: 0.6rem;
+  position: absolute;
+  bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #F57F17;
 }
 
 /* Profile Select Grid */
 .profile-grid {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 30px;
 }
 
 .profile-card {
-    background: white;
-    border: 3px solid #EEE;
-    border-radius: 20px;
-    width: 100px;
-    height: 120px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.2s;
+  background: white;
+  border: 3px solid #EEE;
+  border-radius: 20px;
+  width: 100px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .profile-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-5px);
+  border-color: var(--primary);
+  transform: translateY(-5px);
 }
 
 .profile-avatar {
-    width: 50px;
-    height: 50px;
-    background: #FFCC80;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 10px;
-    text-transform: uppercase;
+  width: 50px;
+  height: 50px;
+  background: #FFCC80;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10px;
+  text-transform: uppercase;
 }
 
 .profile-name {
-    font-weight: 600;
-    color: #333;
-    font-size: 0.9rem;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    width: 90%;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 90%;
 }
 
 .profile-card.add-profile {
-    border-style: dashed;
-    font-size: 2rem;
-    color: #AAA;
+  border-style: dashed;
+  font-size: 2rem;
+  color: #AAA;
 }

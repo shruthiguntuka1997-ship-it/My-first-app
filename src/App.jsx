@@ -527,16 +527,15 @@ function App() {
     const isDailyDone = completedCount === 6
 
     const getPlantImage = () => {
-        if (growthStage <= 3) return stage1
+        if (growthStage <= 5) return stage1
         if (growthStage <= 10) return stage2
         if (growthStage <= 15) return stage3
-        if (growthStage <= 18) return stage4
+        if (growthStage <= 20) return stage4
         return stage5
     }
 
     // Derived Visuals
-    const showFlowers = growthStage >= 11 && growthStage <= 25
-    const showFruits = growthStage >= 19
+    // showFlowers and showFruits logic moved to inline rendering for specific stages.
     // Logic for fruit count visual:
     // "Every 7 continuous days + Day 30"
     // We can use the real `fruitsEarned` or the visual formula. Formula is nicer for lots of fruits.
@@ -804,29 +803,53 @@ function App() {
                 <div className="plant-stage">
                     <img key={animKey} src={getPlantImage()} alt="Plant Stage" className={`plant-img ${isDailyDone ? 'pulse-anim' : ''}`} />
 
-                    {showFlowers && (
+                    {/* Stage 3: Single Flower (Fixed Center) */}
+                    {growthStage >= 11 && growthStage <= 15 && (
                         <div className="fruit-overlay">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                                <span key={`fl-${i}`} className="fruit" style={{
-                                    top: `${30 + Math.random() * 30}%`, left: `${30 + Math.random() * 40}%`,
-                                    animationDelay: `${i * 0.2}s`, fontSize: '1.2rem', opacity: 0.8
+                            <span className="fruit bloom-anim" style={{
+                                top: '40%', left: '50%', transform: 'translate(-50%, -50%)',
+                                fontSize: '1.5rem', opacity: 1
+                            }}>🌸</span>
+                        </div>
+                    )}
+
+                    {/* Stage 4: Multiple Flowers (Fixed Anchors) */}
+                    {growthStage >= 16 && growthStage <= 20 && (
+                        <div className="fruit-overlay">
+                            {[
+                                { top: '30%', left: '40%' },
+                                { top: '35%', left: '60%' },
+                                { top: '50%', left: '30%' },
+                                { top: '55%', left: '70%' }
+                            ].map((pos, i) => (
+                                <span key={`fl-s4-${i}`} className="fruit bloom-anim" style={{
+                                    top: pos.top, left: pos.left,
+                                    fontSize: '1.4rem',
+                                    animationDelay: `${i * 0.15}s`
                                 }}>🌸</span>
                             ))}
                         </div>
                     )}
 
-                    {showFruits && (
+                    {/* Stage 5: Full Tree (Fruits/Mature) */}
+                    {(growthStage >= 21) && (
                         <div className="fruit-overlay">
-                            {Array.from({ length: Math.min(visualFruitCount, 15) }).map((_, i) => {
-                                const isBaby = growthStage >= 19 && growthStage <= 25
-                                return (
-                                    <span key={`fr-${i}`} className="fruit" style={{
-                                        top: `${20 + Math.random() * 40}%`, left: `${20 + Math.random() * 60}%`,
-                                        fontSize: isBaby ? '1.2rem' : '1.8rem', opacity: isBaby ? 0.8 : 1,
-                                        animationDelay: `${i * 0.1}s`
-                                    }}>{TREE_TYPES[treeType].emoji}</span>
-                                )
-                            })}
+                            {[
+                                { top: '25%', left: '35%' },
+                                { top: '20%', left: '55%' },
+                                { top: '40%', left: '20%' },
+                                { top: '45%', left: '75%' },
+                                { top: '60%', left: '30%' },
+                                { top: '55%', left: '50%' },
+                                { top: '35%', left: '80%' }, // extra
+                                { top: '15%', left: '45%' }, // top
+                            ].slice(0, Math.max(5, visualFruitCount)).map((pos, i) => (
+                                <span key={`fr-s5-${i}`} className="fruit bloom-anim" style={{
+                                    top: pos.top, left: pos.left,
+                                    fontSize: '1.8rem',
+                                    animationDelay: `${i * 0.1}s`
+                                }}>{TREE_TYPES[treeType].emoji}</span>
+                            ))}
                         </div>
                     )}
 
