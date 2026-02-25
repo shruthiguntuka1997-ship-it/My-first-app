@@ -19,15 +19,14 @@
   --shadow-soft: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   --stone-color: #F5F5F5;
   --stone-border: #E0E0E0;
+  --parent-color: #FF9800;
 }
 
 body {
   margin: 0;
   font-family: 'Fredoka', 'Baloo 2', cursive;
-  /* More rounded, playful font */
   background: var(--bg-gradient);
   background-attachment: fixed;
-  /* Keep gradient still while scrolling */
   color: var(--text);
   min-height: 100vh;
   display: flex;
@@ -39,12 +38,10 @@ body {
 #root {
   width: 100%;
   max-width: 600px;
-  /* Kept mobile-friendly */
   padding: 20px;
   box-sizing: border-box;
 }
 
-/* --- GLASSMORPHISM CARD --- */
 .app-container {
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
@@ -54,12 +51,13 @@ body {
   box-shadow: var(--shadow-soft);
   padding: 30px;
   text-align: center;
-  /* Ensure container handles overflowing content nicely */
   position: relative;
   overflow: hidden;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Decorative Background Blobs (Optional - can be added via pseudo-elements) */
 .app-container::before {
   content: '';
   position: absolute;
@@ -83,13 +81,6 @@ h1 {
   z-index: 1;
 }
 
-h2 {
-  color: var(--text);
-  font-weight: 600;
-  position: relative;
-  z-index: 1;
-}
-
 .message {
   font-size: 1.2rem;
   margin: 10px 0;
@@ -98,23 +89,86 @@ h2 {
   z-index: 1;
 }
 
-/* --- DASHBOARD REDESIGN --- */
+/* --- PROFILE SELECTION --- */
+.profile-select {
+  justify-content: center;
+}
 
-/* 1. Profile Header */
+.profile-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.profile-card {
+  background: white;
+  border: none;
+  border-radius: 20px;
+  padding: 15px;
+  width: 120px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.profile-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.profile-name {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+.add-profile {
+  font-size: 3rem;
+  color: #CCC;
+  border: 4px dashed #DDD;
+  background: transparent;
+  justify-content: center;
+}
+
+.add-profile:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* --- DASHBOARD --- */
 .header-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 20px;
   position: relative;
   z-index: 2;
+  text-align: left;
 }
 
 .dash-greeting {
   font-size: 1.8rem;
   color: var(--primary);
   margin: 0;
-  text-align: left;
 }
 
 .profile-btn {
@@ -126,308 +180,428 @@ h2 {
   font-size: 1.5rem;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.3s;
   display: flex;
-  /* Center Emoji */
   align-items: center;
   justify-content: center;
 }
 
 .profile-btn:hover {
-  transform: scale(1.15) rotate(5deg);
+  transform: scale(1.1);
   border-color: var(--accent);
 }
 
-/* 2. Info Card (Current Status) */
+.back-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.back-btn:hover {
+  background: rgba(46, 125, 50, 0.1);
+}
+
 .dash-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 255, 0.8) 100%);
+  background: white;
   border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 30px;
-  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.8), 0 5px 15px rgba(0, 0, 0, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(5px);
-  transform: translateY(0);
-  transition: transform 0.3s;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.dash-card:hover {
-  transform: translateY(-3px);
-}
-
-/* 3. The Garden Path (Day Grid) */
-/* We convert grid to a flex wrap or grid with specific layout to mimic a winding path */
 .day-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  /* Center the path */
-  gap: 15px;
-  margin: 30px 0;
-  padding: 10px;
-  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin: 20px 0;
 }
 
-/* The Stepping Stones */
 .day-card {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  /* Circles */
-  background: var(--stone-color);
-  border: 4px solid var(--stone-border);
+  aspect-ratio: 1;
+  border-radius: 15px;
+  border: 2px solid #EEE;
+  background: #F9F9F9;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  font-weight: 700;
-  color: #AAA;
-  font-size: 1.1rem;
-  cursor: default;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
   position: relative;
-  box-shadow: 0 4px 0 #CCC;
-  /* 3D effect */
-  margin: 5px;
-  /* Spacing */
 }
 
-/* Path Winding Effect - Alternate margins for a 'snake' look (subtle) */
-/* Every 5th item */
-.day-card:nth-child(even) {
-  margin-top: 25px;
-  /* Stagger effect */
-}
-
-.day-card:hover {
-  transform: scale(1.1);
-}
-
-/* States */
 .day-card.future {
-  background: #F0F0F0;
-  border-color: #E0E0E0;
-  opacity: 0.6;
+  cursor: default;
+  opacity: 0.5;
 }
 
 .day-card.done {
-  background: var(--secondary);
-  border-color: var(--primary);
-  color: white;
-  box-shadow: 0 4px 0 #388E3C, 0 8px 15px rgba(76, 175, 80, 0.4);
-  cursor: pointer;
+  background: #E8F5E9;
+  border-color: #81C784;
+  color: #2E7D32;
 }
 
 .day-card.missed {
-  background: #FFCDD2;
-  border-color: #E57373;
+  background: #FFEBEE;
+  border-color: #FFAB91;
   color: #C62828;
-  box-shadow: 0 4px 0 #D32F2F;
 }
 
-/* START/CURRENT DAY - The "Flower" or "Glowing Stone" */
 .day-card.today {
-  width: 65px;
-  height: 65px;
   background: #FFF9C4;
-  /* Light Yellow */
-  border: 4px solid var(--accent);
-  color: var(--text);
-  z-index: 10;
-  box-shadow: 0 0 20px var(--accent-glow), 0 6px 0 #FBC02D;
-  animation: float 3s ease-in-out infinite;
+  border-color: #FFEB3B;
+  box-shadow: 0 0 15px rgba(255, 235, 59, 0.5);
+  transform: scale(1.05);
+  z-index: 2;
 }
 
-.day-card.today .day-number {
-  font-size: 1.4rem;
-}
-
-.day-card.today::after {
-  content: '⭐';
-  position: absolute;
-  top: -15px;
-  right: -10px;
-  font-size: 1.2rem;
-  animation: spin 3s linear infinite;
-}
-
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* --- TREE SELECTION & GAME UI --- */
-
-.tree-selection-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
-}
-
-.tree-select-btn {
-  background: white;
-  border: 4px solid #EEE;
-  border-radius: 25px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.tree-select-btn:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-}
-
-.input-section input[type="text"] {
-  border: 3px solid #B0BEC5;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-button.start-btn {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4), 0 5px 0 #2E7D32;
-  /* 3D Button */
-  border-radius: 50px;
-  padding: 12px 40px;
+.day-label {
+  font-size: 0.6rem;
   font-weight: 800;
-  letter-spacing: 1px;
-  border: none;
-  color: white;
-  transition: all 0.2s;
+  text-transform: uppercase;
+  margin-top: 2px;
 }
 
-button.start-btn:active {
-  transform: translateY(5px);
-  box-shadow: 0 0 0 #2E7D32;
+.day-number {
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
-/* Plant Stage & Animations */
+/* --- GAME UI --- */
+.header-info {
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: var(--primary);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.game-section h2 {
+  margin-top: 0;
+  color: var(--text);
+}
+
+.message-box {
+  background: white;
+  padding: 15px;
+  border-radius: 20px;
+  margin: 15px 0;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+  color: #555;
+  border: 1px solid #EEE;
+}
+
 .plant-stage {
-  min-height: 280px;
   position: relative;
-  /* Glowing Aura behind plant */
-}
-
-.plant-stage::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(255, 235, 59, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
-  border-radius: 50%;
-  z-index: 0;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
 }
 
 .plant-img {
-  width: 240px;
-  /* subtle float */
-  animation: float 4s ease-in-out infinite;
-  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.15));
+  max-height: 100%;
+  width: auto;
+  z-index: 1;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@keyframes float {
+.pulse-anim {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
   0% {
-    transform: translateY(0px);
+    transform: scale(1.0);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1.0);
+  }
+}
+
+.fruit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fruit {
+  position: absolute;
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.celebration {
+  position: absolute;
+  top: -40px;
+  width: 100%;
+  color: var(--primary);
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
   }
 
   50% {
     transform: translateY(-10px);
   }
-
-  100% {
-    transform: translateY(0px);
-  }
 }
 
-/* Habits List (Checklist) */
+/* Checklist */
+.habits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .habit-item {
   background: white;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  padding: 12px 20px;
   border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  user-select: none;
 }
 
 .habit-item:hover {
   background: #F1F8E9;
-  transform: scale(1.02);
+  transform: translateX(5px);
 }
 
 .habit-item.done {
   background: #E8F5E9;
-  /* Light Green */
-  border: 2px solid var(--secondary);
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+  border-color: var(--secondary);
 }
 
+.habit-item input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
 
-/* --- MODALS (Glassmorphism) --- */
+/* Tree Selection */
+.tree-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.tree-select-btn {
+  background: white;
+  border: 4px solid #EEE;
+  border-radius: 20px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tree-select-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.tree-emoji {
+  font-size: 2.5rem;
+  margin-bottom: 5px;
+}
+
+.tree-name {
+  font-weight: 700;
+  color: #555;
+}
+
+/* --- MODALS --- */
 .modal-overlay {
-  background-color: rgba(0, 50, 50, 0.4);
-  /* Dark Teal Tint */
-  backdrop-filter: blur(5px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
 }
 
 .modal-content {
-  background: rgba(255, 255, 255, 0.95);
-  border: 4px solid var(--accent);
-  /* Pop of Gold */
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  background: white;
+  border-radius: 25px;
+  padding: 25px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.question-text {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 20px 0;
+  color: var(--text);
+}
+
+.options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .option-btn {
-  background: white;
-  border: 2px solid #EEE;
-  box-shadow: 0 4px 0 #EEE;
-  padding: 15px;
+  padding: 12px;
   border-radius: 15px;
-  margin-bottom: 8px;
+  border: 2px solid #EEE;
+  background: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .option-btn:hover {
-  background: #FFFDE7;
-  border-color: var(--accent);
-  box-shadow: 0 4px 0 #FBC02D;
-  transform: translateY(-2px);
+  background: #F1F8E9;
+  border-color: var(--primary);
 }
 
-.option-btn:active {
-  transform: translateY(2px);
-  box-shadow: none;
+.modal-feedback {
+  margin-top: 15px;
+  font-weight: 600;
+  color: #C62828;
 }
 
-/* Profile Select specific */
-.profile-card {
-  border-radius: 25px;
+.close-modal-btn {
+  margin-top: 20px;
+  background: #EEE;
   border: none;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-.profile-avatar {
-  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
-  box-shadow: 0 5px 10px rgba(245, 124, 0, 0.3);
+/* --- PROFILE & PARENT ZONE --- */
+.profile-modal {
+  max-width: 500px;
 }
 
-/* Responsive adjustments */
+.profile-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.outline {
+  background: transparent !important;
+  color: #555 !important;
+  border: 2px solid #DDD !important;
+  box-shadow: none !important;
+  border-radius: 50px;
+  padding: 12px 40px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.history-list {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  text-align: left;
+}
+
+.history-card {
+  background: #F9F9F9;
+  padding: 15px;
+  border-radius: 15px;
+  border-left: 5px solid #DDD;
+}
+
+.info-card {
+  background: #FFF8E1;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+
+.parent-dashboard h4 {
+  margin-top: 0;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #EEE;
+  margin: 10px 0;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.small-btn {
+  margin-top: 20px;
+  background: transparent;
+  border: 1px solid #CCC;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #777;
+}
+
 @media (max-width: 480px) {
-  .day-card {
-    width: 45px;
-    height: 45px;
-    margin: 4px;
-  }
-
-  .day-card.today {
-    width: 55px;
-    height: 55px;
+  .day-grid {
+    grid-template-columns: repeat(5, 1fr);
   }
 
   h1 {
